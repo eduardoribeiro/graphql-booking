@@ -1,0 +1,17 @@
+{
+  "name": "graphql-booking",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "express-graphql": "^0.7.1",
+    "graphql": "^14.1.1"
+  },
+  "description": "Booking App | GraphQL Tutorial",
+  "author": "Raúl"
+}
