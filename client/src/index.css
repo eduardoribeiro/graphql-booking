@@ -1,0 +1,49 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+.form-actions button {
+  font: inherit;
+  border-radius: 3px;
+  padding: 0.25rem 1rem;
+  margin-right: 1rem;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.26);
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button.switch {
+  color: #fff;
+  background-color: #044389;
+  border: 1px solid #044389;
+}
+
+.btn {
+  font: inherit;
+  border-radius: 3px;
+  padding: 0.25rem 1rem;
+  margin-right: 1rem;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.26);
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-blue {
+  color: #fff;
+  background-color: #044389;
+  border: 1px solid #044389;
+}
+
+.btn-green {
+  color: #fff;
+  background-color: #43c17a;
+  border: 1px solid #43c17a;
+}
+
+.btn-red {
+  color: #fff;
+  background-color: #f75c03;
+  border: 1px solid #f75c03;
+}
