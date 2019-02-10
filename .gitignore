@@ -1,4 +1,4 @@
-node_modules
+node_modules/
 nodemon.json
 .eslintrc.js
 yarn.lock
