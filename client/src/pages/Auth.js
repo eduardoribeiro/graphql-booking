@@ -6,7 +6,8 @@ import AuthContext from '../context/auth-context';
 
 class Auth extends Component {
   state = {
-    isLogin: true
+    isLogin: true,
+    authError: ''
   };
 
   static contextType = AuthContext;
@@ -71,6 +72,10 @@ class Auth extends Component {
         headers: headers
       })
       .then(res => {
+        if (res.status === 500) {
+          this.setState({ authError: res.errors[0].message });
+          console.log('res.errors[0].message');
+        }
         if (res.status !== 200 && res.status !== 201) {
           throw new Error('Can not register user!');
         }
@@ -84,13 +89,19 @@ class Auth extends Component {
         }
         console.log(res);
       })
-      .catch(err => console.error(err));
+      .catch(err => {
+        console.error(err);
+        this.setState({
+          authError: 'Wrong email or password!'
+        });
+      });
   };
 
   render() {
     return (
       <form className="auth-form" onSubmit={this.submitHandler}>
         <h1>{this.state.isLogin ? 'Login!' : 'Signup!'}</h1>
+        {this.state.authError && <p>{this.state.authError}</p>}
         <div className="form-control">
           <label htmlFor="email">E-mail</label>
           <input type="email" id="email" ref={this.emailEl} />

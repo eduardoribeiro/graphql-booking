@@ -47,3 +47,37 @@ button.switch {
   background-color: #f75c03;
   border: 1px solid #f75c03;
 }
+
+.auth-form {
+  max-width: 80%;
+  width: 25rem;
+  margin: 5rem auto;
+}
+
+.form-control {
+  margin-bottom: 1rem;
+}
+
+.form-control label,
+.form-control input,
+.form-control textarea {
+  width: 100%;
+  display: block;
+  background-color: #fff;
+  color: #000;
+}
+
+.form-control label {
+  margin-bottom: 0.5rem;
+}
+
+.form-control input {
+  padding: 0.4rem;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  border-radius: 2px;
+}
+
+.form-control textarea {
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  border-radius: 2px;
+}
