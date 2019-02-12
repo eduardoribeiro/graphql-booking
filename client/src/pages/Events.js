@@ -5,6 +5,8 @@ import './Events.css';
 import Modal from '../components/Modal/Modal';
 import Backdrop from '../components/Backdrop/Backdrop';
 import AuthContext from '../context/auth-context';
+import EventList from '../components/Events/EventList/EventList';
+import Loader from '../components/Loader/Loader';
 
 class Events extends Component {
   state = {
@@ -92,6 +94,7 @@ class Events extends Component {
   };
 
   fetchEvents = async () => {
+    this.setState({ isLoading: true });
     const body = JSON.stringify({
       query: `
         query {
@@ -101,6 +104,9 @@ class Events extends Component {
             price
             description
             date
+            creator {
+              _id
+            }
           }
         }
       `
@@ -116,9 +122,12 @@ class Events extends Component {
       })
       .then(res => {
         const events = res.data.data.events;
-        this.setState({ events });
+        this.setState({ events, isLoading: false });
       })
-      .catch(err => console.error(err));
+      .catch(err => {
+        this.setState({ isLoading: false });
+        console.error(err);
+      });
   };
 
   render() {
@@ -176,6 +185,15 @@ class Events extends Component {
           </div>
         )}
         <ul className="event-list">{eventList}</ul>
+        {this.state.isLoading ? (
+          <Loader />
+        ) : (
+          <EventList
+            events={this.state.events}
+            authUserId={this.context.userId}
+            viewDetails={this.detailHandler}
+          />
+        )}
       </React.Fragment>
     );
   }
