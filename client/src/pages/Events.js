@@ -65,10 +65,16 @@ class Events extends Component {
             price: ${price}
             date: "${date}"
             description: "${description}"
+            creator: "${this.context.userId}"
           }) {
             _id
             title
             description
+            date
+            price
+            creator {
+              _id
+            }
           }
         }
       `
@@ -87,8 +93,20 @@ class Events extends Component {
         if (res.status !== 200 && res.status !== 201) {
           throw new Error('Can not register event!');
         }
-        this.fetchEvents();
-        console.log(res);
+        this.setState(prevState => {
+          const updatedEvents = [...prevState.events];
+          updatedEvents.push({
+            _id: res.data.data.createEvent._id,
+            title: res.data.data.createEvent.title,
+            description: res.data.data.createEvent.description,
+            date: res.data.data.createEvent.date,
+            price: res.data.data.createEvent.price,
+            creator: {
+              _id: this.context.userId
+            }
+          });
+          return { events: updatedEvents };
+        });
       })
       .catch(err => console.error(err));
   };
