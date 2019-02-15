@@ -15,6 +15,7 @@ class Events extends Component {
     isLoading: false,
     selectedEvent: null
   };
+  isActive = true;
 
   static contextType = AuthContext;
 
@@ -47,13 +48,47 @@ class Events extends Component {
     });
   };
 
-  bookEventHandler = () => {};
+  bookEventHandler = async () => {
+    if (!this.context.token) {
+      this.setState({ selectedEvent: null });
+      return;
+    }
+    const body = JSON.stringify({
+      query: `
+        mutation {
+          bookEvent(eventId: "${this.state.selectedEvent._id}") {
+            _id
+            createdAt
+            updatedAt
+          }
+        }
+      `
+    });
+
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + this.context.token
+    };
+
+    await axios
+      .post('http://localhost:5000/api', body, {
+        headers: headers
+      })
+      .then(res => {
+        this.setState({ selectedEvent: null });
+        console.log(res);
+      })
+      .catch(err => {
+        this.setState({ selectedEvent: null });
+        console.error(err);
+      });
+  };
 
   modalCancelHandler = () => {
     this.setState({ selectedEvent: null });
   };
 
-  confirmHandler = async () => {
+  newEventHandler = async () => {
     this.setState({ showModal: false });
     const title = this.titleElRef.current.value;
     const price = +this.priceElRef.current.value;
@@ -157,13 +192,21 @@ class Events extends Component {
       })
       .then(res => {
         const events = res.data.data.events;
-        this.setState({ events, isLoading: false });
+        if (this.isActive) {
+          this.setState({ events, isLoading: false });
+        }
       })
       .catch(err => {
-        this.setState({ isLoading: false });
+        if (this.isActive) {
+          this.setState({ isLoading: false });
+        }
         console.error(err);
       });
   };
+
+  componentWillUnmount() {
+    this.isActive = false;
+  }
 
   render() {
     return (
@@ -174,7 +217,7 @@ class Events extends Component {
             <Modal
               title="Add Event"
               onCancel={this.modalHandler}
-              onConfirm={this.bookEventHandler}
+              onConfirm={this.newEventHandler}
               canConfirm
               canCancel
               confirmText="Confirm"
@@ -210,10 +253,10 @@ class Events extends Component {
             <Modal
               title={this.state.selectedEvent.title}
               onCancel={this.modalCancelHandler}
-              onConfirm={this.confirmHandler}
+              onConfirm={this.bookEventHandler}
               canConfirm
               canCancel
-              confirmText="Book"
+              confirmText={this.context.token ? 'Book' : 'Confirm'}
             >
               <h4>
                 ${this.state.selectedEvent.price} -{' '}
