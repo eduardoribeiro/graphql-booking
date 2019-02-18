@@ -3,6 +3,7 @@ import axios from 'axios';
 
 import Loader from '../components/Loader/Loader';
 import AuthContext from '../context/auth-context';
+import BookingList from '../components/Bookings/BookingList/BookingList';
 
 class Bookings extends Component {
   state = {
@@ -53,15 +54,50 @@ class Bookings extends Component {
       });
   };
 
+  cancelBookingHandler = async bookingId => {
+    this.setState({ isLoading: true });
+    const body = JSON.stringify({
+      query: `
+        mutation {
+          cancelBooking(bookingId: "${bookingId}") {
+            _id
+            title
+          }
+        }
+      `
+    });
+
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + this.context.token
+    };
+
+    await axios
+      .post('http://localhost:5000/api', body, {
+        headers: headers
+      })
+      .then(res => {
+        this.setState(prevState => {
+          const updatedBookings = prevState.bookings.filter(booking => {
+            return booking._id !== bookingId;
+          });
+          return { bookings: updatedBookings, isLoading: false };
+        });
+      })
+      .catch(err => {
+        this.setState({ isLoading: false });
+        console.error(err);
+      });
+  };
+
   render() {
     return (
       <React.Fragment>
         {this.state.isLoading && <Loader />}
-        <ul>
-          {this.state.bookings.map(booking => (
-            <li key={booking._id}>{booking.event.title}</li>
-          ))}
-        </ul>
+        <BookingList
+          bookings={this.state.bookings}
+          onDelete={this.cancelBookingHandler}
+        />
       </React.Fragment>
     );
   }
